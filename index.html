@@ -154,6 +154,21 @@
     margin-bottom: 14px;
   }
 
+  .banner-bot-offline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(248,113,113,.12);
+    border: 1px solid rgba(248,113,113,.4);
+    color: #ffd7d7;
+    border-radius: var(--radio);
+    padding: 12px 14px;
+    font-size: .82rem;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+  .banner-bot-offline .icono { font-size: 1.2rem; }
+
   /* Totales globales */
   .totales-globales {
     display: grid;
@@ -342,6 +357,11 @@
 
   <div class="ultima-actualizacion" id="txt-ultima-actualizacion"></div>
 
+  <div class="banner-bot-offline oculto" id="banner-bot-offline">
+    <span class="icono">⚠️</span>
+    <span id="txt-banner-bot-offline"></span>
+  </div>
+
   <div class="totales-globales" id="totales-globales"></div>
   <div class="resumen-estado" id="resumen-estado"></div>
 
@@ -357,11 +377,13 @@
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfnMSLDHqq_NVr67XhG42kLXWlTi9wfiNXiMAM7IkjTHV8cfc7AlSByvK6Dh_Owf2b/exec";
   const INTERVALO_REFRESH_MS = 45000;   // vuelve a pedir datos al servidor
   const INTERVALO_TICK_MS = 20000;      // solo recalcula los contadores de tiempo
+  const UMBRAL_LATIDO_MIN = 8;          // si el bot no reporta actividad en estos minutos, se considera desconectado
 
   const estadoApp = {
     propietario: null,
     codigo: null,
     perfiles: [],
+    ultimoLatido: null,
   };
 
   let timerRefresh = null;
@@ -417,6 +439,17 @@
     return { texto: `Lista para farmear (volvió hace ${Math.abs(diffMin)} min)`, clase: "regreso-listo" };
   }
 
+  function minutosDesdeLatido() {
+    if (!estadoApp.ultimoLatido) return Infinity;
+    const d = new Date(estadoApp.ultimoLatido);
+    if (isNaN(d.getTime())) return Infinity;
+    return (new Date() - d) / 60000;
+  }
+
+  function botEnLinea() {
+    return minutosDesdeLatido() <= UMBRAL_LATIDO_MIN;
+  }
+
   function numero(v, decimales = 1) {
     const n = parseFloat(v);
     return Number.isFinite(n) ? n : 0;
@@ -459,6 +492,7 @@
         estadoApp.propietario = resp.propietario;
         estadoApp.codigo = codigo;
         estadoApp.perfiles = resp.perfiles || [];
+        estadoApp.ultimoLatido = resp.ultimo_latido || null;
         sessionStorage.setItem("farmeo_codigo", codigo);
         mostrarDashboard();
         return true;
@@ -529,6 +563,7 @@
       .then(resp => {
         if (!resp.ok) return;
         estadoApp.perfiles = (resp.perfiles || []).filter(p => p.propietario === estadoApp.propietario);
+        estadoApp.ultimoLatido = resp.ultimo_latido || null;
         renderizar();
         marcarActualizado();
       })
@@ -566,8 +601,23 @@
   // ---------- render ----------
 
   function renderizar() {
+    renderBannerBot();
     renderTotalesGlobales();
     renderCuentas();
+  }
+
+  function renderBannerBot() {
+    const banner = document.getElementById("banner-bot-offline");
+    if (botEnLinea()) {
+      banner.classList.add("oculto");
+      return;
+    }
+    const min = minutosDesdeLatido();
+    const txtHace = Number.isFinite(min) ? `hace ${Math.round(min)} min` : "nunca";
+    document.getElementById("txt-banner-bot-offline").textContent =
+      `El bot no está en ejecución ahora mismo (última actividad reportada: ${txtHace}). ` +
+      `Pausar o reanudar no tendrá efecto hasta que vuelva a estar activo.`;
+    banner.classList.remove("oculto");
   }
 
   function renderTotalesGlobales() {
@@ -645,6 +695,12 @@
   function renderPerfilCard(p) {
     const est = infoEstado(p.estado || "activo");
     const regreso = textoRegreso(p);
+    const botOffline = !botEnLinea();
+
+    const habilitado = est.habilitado && !botOffline;
+    const textoBoton = botOffline ? "Bot sin conexión" : est.boton;
+    const claseBoton = botOffline ? "btn-secundario" : est.claseBtn;
+    const titulo = botOffline ? "El bot no está en ejecución, esta acción no se aplicará ahora" : "";
 
     return `
       <div class="perfil-card">
@@ -668,12 +724,13 @@
         <div class="acciones-perfil">
           <span class="badge ${est.badge}">${est.label}</span>
           <button
-            class="btn btn-sm ${est.claseBtn}"
-            ${est.habilitado ? "" : "disabled"}
+            class="btn btn-sm ${claseBoton}"
+            ${habilitado ? "" : "disabled"}
+            title="${escapeAttr(titulo)}"
             data-id="${escapeHtml(p.id_juego)}"
             data-accion="${est.accion || ""}"
-            ${est.habilitado ? `onclick="window.__pausarPerfil('${escapeAttr(p.id_juego)}','${est.accion}')"` : ""}
-          >${est.boton}</button>
+            ${habilitado ? `onclick="window.__pausarPerfil('${escapeAttr(p.id_juego)}','${est.accion}')"` : ""}
+          >${textoBoton}</button>
         </div>
       </div>
     `;
