@@ -483,7 +483,9 @@
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfnMSLDHqq_NVr67XhG42kLXWlTi9wfiNXiMAM7IkjTHV8cfc7AlSByvK6Dh_Owf2b/exec";
   const INTERVALO_REFRESH_MS = 45000;   // vuelve a pedir datos al servidor
   const INTERVALO_TICK_MS = 20000;      // solo recalcula los contadores de tiempo
-  const UMBRAL_LATIDO_MIN = 8;          // si el bot no reporta actividad en estos minutos, se considera desconectado
+  const UMBRAL_LATIDO_MIN = 15;         // si el bot no reporta actividad en estos minutos, se considera desconectado
+                                        // (holgado a propósito: farmear un perfil puede tardar varios minutos
+                                        //  y el bot solo reporta entre perfil y perfil)
 
   const estadoApp = {
     propietario: null,
