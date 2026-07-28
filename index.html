@@ -318,6 +318,8 @@
   .btn-reanudar { background: rgba(52,211,153,.15); color: var(--verde); }
   .btn-reanudar:hover:not(:disabled) { background: rgba(52,211,153,.28); }
   .btn-pendiente { background: rgba(251,191,36,.15); color: var(--amarillo); }
+  .btn-cancelar { background: var(--bg-card-2); color: var(--texto-tenue); border: 1px solid var(--borde); }
+  .btn-cancelar:hover:not(:disabled) { color: var(--texto); border-color: var(--acento); }
 
   .vacio {
     text-align: center;
@@ -462,14 +464,22 @@
   // ---------- estados de perfil ----------
 
   const ESTADOS = {
-    activo:              { label: "Activo",      badge: "badge-activo",    boton: "Pausar",      claseBtn: "btn-pausar",   accion: "pausar",   habilitado: true },
-    pausar_solicitado:   { label: "Pausando…",    badge: "badge-pendiente", boton: "Pausando…",   claseBtn: "btn-pendiente", accion: null,      habilitado: false },
-    pausado:             { label: "Pausado",      badge: "badge-pausado",   boton: "Reanudar",    claseBtn: "btn-reanudar", accion: "reanudar", habilitado: true },
-    reanudar_solicitado: { label: "Reanudando…",  badge: "badge-pendiente", boton: "Reanudando…", claseBtn: "btn-pendiente", accion: null,      habilitado: false },
+    activo:              { label: "Activo",      badge: "badge-activo",    boton: "Pausar",      claseBtn: "btn-pausar",   accion: "pausar" },
+    pausado:             { label: "Pausado",      badge: "badge-pausado",   boton: "Reanudar",    claseBtn: "btn-reanudar", accion: "reanudar" },
+    pausar_solicitado:   { label: "Pausando…",    badge: "badge-pendiente", boton: "Pausando…",   claseBtn: "btn-pendiente", accion: null },
+    reanudar_solicitado: { label: "Reanudando…",  badge: "badge-pendiente", boton: "Reanudando…", claseBtn: "btn-pendiente", accion: null },
   };
 
-  function infoEstado(estado) {
-    return ESTADOS[estado] || ESTADOS.activo;
+  // Las solicitudes se pueden mandar aunque el bot esté apagado (solo escriben
+  // en el Sheet); si además está offline, se avisa que quedará "en cola" en
+  // vez de sugerir que se está aplicando en este momento.
+  function infoEstado(estado, offline) {
+    const base = ESTADOS[estado] || ESTADOS.activo;
+    const esPendiente = estado === "pausar_solicitado" || estado === "reanudar_solicitado";
+    if (esPendiente && offline) {
+      return { ...base, label: "En cola", boton: "En cola…" };
+    }
+    return base;
   }
 
   // ---------- login ----------
@@ -578,6 +588,7 @@
 
   function solicitarPausa(idJuego, nuevaAccion, estadoOptimista) {
     const perfil = estadoApp.perfiles.find(p => String(p.id_juego) === String(idJuego));
+    const estadoOriginal = perfil ? perfil.estado : null;
     if (perfil) {
       perfil.estado = estadoOptimista;
       renderizar();
@@ -590,11 +601,44 @@
       nueva_accion: nuevaAccion,
     }).then(resp => {
       if (!resp.ok && perfil) {
+        perfil.estado = estadoOriginal;
+        renderizar();
         alert(resp.error || "No se pudo enviar la solicitud, intenta de nuevo.");
-        actualizarDatos();
       }
     }).catch(() => {
+      if (perfil) {
+        perfil.estado = estadoOriginal;
+        renderizar();
+      }
       alert("No se pudo conectar para enviar la solicitud.");
+    });
+  }
+
+  function cancelarSolicitud(idJuego) {
+    const perfil = estadoApp.perfiles.find(p => String(p.id_juego) === String(idJuego));
+    const estadoOriginal = perfil ? perfil.estado : null;
+    if (perfil) {
+      perfil.estado = estadoOriginal === "pausar_solicitado" ? "activo" : "pausado";
+      renderizar();
+    }
+    postAppsScript({
+      action: "solicitar_pausa",
+      propietario: estadoApp.propietario,
+      codigo: estadoApp.codigo,
+      id_juego: idJuego,
+      nueva_accion: "cancelar",
+    }).then(resp => {
+      if (!resp.ok && perfil) {
+        perfil.estado = estadoOriginal;
+        renderizar();
+        alert(resp.error || "No se pudo cancelar la solicitud.");
+      }
+    }).catch(() => {
+      if (perfil) {
+        perfil.estado = estadoOriginal;
+        renderizar();
+      }
+      alert("No se pudo conectar para cancelar la solicitud.");
     });
   }
 
@@ -616,7 +660,7 @@
     const txtHace = Number.isFinite(min) ? `hace ${Math.round(min)} min` : "nunca";
     document.getElementById("txt-banner-bot-offline").textContent =
       `El bot no está en ejecución ahora mismo (última actividad reportada: ${txtHace}). ` +
-      `Pausar o reanudar no tendrá efecto hasta que vuelva a estar activo.`;
+      `Puedes pausar o reanudar perfiles igual — quedarán "en cola" y se aplicarán en cuanto el bot vuelva a iniciar.`;
     banner.classList.remove("oculto");
   }
 
@@ -641,11 +685,13 @@
       <div class="stat-tile"><div class="valor">🪙 ${formatoNumero(totales.oro)}</div><div class="etiqueta">Oro</div></div>
     `;
 
+    const textoPendientes = botEnLinea() ? "aplicando cambios…" : "en cola (esperando al bot)";
+
     document.getElementById("resumen-estado").innerHTML = `
       <span><b>${p.length}</b> perfiles</span>
       <span><b>${activos}</b> activos</span>
       <span><b>${pausados}</b> pausados</span>
-      ${pendientes ? `<span><b>${pendientes}</b> aplicando cambios…</span>` : ""}
+      ${pendientes ? `<span><b>${pendientes}</b> ${textoPendientes}</span>` : ""}
     `;
   }
 
@@ -693,14 +739,23 @@
   }
 
   function renderPerfilCard(p) {
-    const est = infoEstado(p.estado || "activo");
+    const estadoActual = p.estado || "activo";
+    const offline = !botEnLinea();
+    const est = infoEstado(estadoActual, offline);
     const regreso = textoRegreso(p);
-    const botOffline = !botEnLinea();
 
-    const habilitado = est.habilitado && !botOffline;
-    const textoBoton = botOffline ? "Bot sin conexión" : est.boton;
-    const claseBoton = botOffline ? "btn-secundario" : est.claseBtn;
-    const titulo = botOffline ? "El bot no está en ejecución, esta acción no se aplicará ahora" : "";
+    // Se puede pausar/reanudar aunque el bot esté apagado (solo escribe en el
+    // Sheet). Mientras haya una solicitud pendiente de aplicar, se ofrece
+    // "Cancelar" en vez de bloquear el botón sin más.
+    const esPendiente = estadoActual === "pausar_solicitado" || estadoActual === "reanudar_solicitado";
+    const tituloPendiente = offline ? "Se aplicará en cuanto el bot vuelva a iniciar" : "";
+
+    const botonHtml = esPendiente
+      ? `<button class="btn btn-sm btn-cancelar" title="${escapeAttr(tituloPendiente)}"
+           onclick="window.__cancelarPerfil('${escapeAttr(p.id_juego)}')">Cancelar</button>`
+      : `<button class="btn btn-sm ${est.claseBtn}"
+           data-id="${escapeHtml(p.id_juego)}" data-accion="${est.accion || ""}"
+           onclick="window.__pausarPerfil('${escapeAttr(p.id_juego)}','${est.accion}')">${est.boton}</button>`;
 
     return `
       <div class="perfil-card">
@@ -723,14 +778,7 @@
 
         <div class="acciones-perfil">
           <span class="badge ${est.badge}">${est.label}</span>
-          <button
-            class="btn btn-sm ${claseBoton}"
-            ${habilitado ? "" : "disabled"}
-            title="${escapeAttr(titulo)}"
-            data-id="${escapeHtml(p.id_juego)}"
-            data-accion="${est.accion || ""}"
-            ${habilitado ? `onclick="window.__pausarPerfil('${escapeAttr(p.id_juego)}','${est.accion}')"` : ""}
-          >${textoBoton}</button>
+          ${botonHtml}
         </div>
       </div>
     `;
@@ -739,6 +787,10 @@
   window.__pausarPerfil = function (idJuego, accion) {
     const estadoOptimista = accion === "reanudar" ? "reanudar_solicitado" : "pausar_solicitado";
     solicitarPausa(idJuego, accion, estadoOptimista);
+  };
+
+  window.__cancelarPerfil = function (idJuego) {
+    cancelarSolicitud(idJuego);
   };
 
   function escapeHtml(v) {
