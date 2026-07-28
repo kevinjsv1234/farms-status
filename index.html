@@ -321,6 +321,89 @@
   .btn-cancelar { background: var(--bg-card-2); color: var(--texto-tenue); border: 1px solid var(--borde); }
   .btn-cancelar:hover:not(:disabled) { color: var(--texto); border-color: var(--acento); }
 
+  /* ---------- SELECTOR DE VISTA ---------- */
+  .tabs-vista {
+    display: inline-flex;
+    background: var(--bg-card-2);
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    padding: 3px;
+    gap: 3px;
+    margin-bottom: 16px;
+  }
+  .tab-vista {
+    border: none;
+    background: transparent;
+    color: var(--texto-tenue);
+    font-size: .8rem;
+    font-weight: 600;
+    padding: 7px 15px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease;
+  }
+  .tab-vista:hover:not(.activa) { color: var(--texto); }
+  .tab-vista.activa { background: var(--acento); color: #fff; }
+
+  /* ---------- VISTA LISTADO ---------- */
+  .barra-orden {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+    font-size: .78rem;
+    color: var(--texto-tenue);
+  }
+  .barra-orden select {
+    background: var(--bg-card-2);
+    color: var(--texto);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: 7px 10px;
+    font-size: .8rem;
+    font-family: inherit;
+    outline: none;
+  }
+  .barra-orden select:focus { border-color: var(--acento); }
+
+  .tabla-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background: var(--bg-card);
+  }
+  table.tabla-listado {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .8rem;
+    min-width: 860px;
+  }
+  table.tabla-listado th,
+  table.tabla-listado td {
+    padding: 10px 12px;
+    text-align: left;
+    white-space: nowrap;
+  }
+  table.tabla-listado thead th {
+    background: var(--bg-card-2);
+    color: var(--texto-tenue);
+    font-size: .7rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-weight: 700;
+  }
+  table.tabla-listado thead th.ordenable { cursor: pointer; user-select: none; }
+  table.tabla-listado thead th.ordenable:hover { color: var(--texto); }
+  table.tabla-listado thead th.activa { color: var(--acento-2); }
+  table.tabla-listado th.num, table.tabla-listado td.num { text-align: right; }
+  table.tabla-listado tbody tr { border-top: 1px solid var(--borde); }
+  table.tabla-listado tbody tr:hover { background: rgba(255,255,255,.02); }
+  table.tabla-listado td.total { font-weight: 700; }
+  .celda-granja .n { font-weight: 700; }
+  .celda-granja .m { font-size: .7rem; color: var(--texto-tenue); }
+  .celda-cuenta { color: var(--texto-tenue); font-size: .75rem; }
+
   .vacio {
     text-align: center;
     color: var(--texto-tenue);
@@ -367,7 +450,28 @@
   <div class="totales-globales" id="totales-globales"></div>
   <div class="resumen-estado" id="resumen-estado"></div>
 
-  <div id="contenedor-cuentas"></div>
+  <div class="tabs-vista">
+    <button class="tab-vista activa" data-vista="cuentas">Por cuenta</button>
+    <button class="tab-vista" data-vista="listado">Listado</button>
+  </div>
+
+  <div id="vista-cuentas">
+    <div id="contenedor-cuentas"></div>
+  </div>
+
+  <div id="vista-listado" class="oculto">
+    <div class="barra-orden">
+      <span>Ordenar por</span>
+      <select id="select-orden"></select>
+      <button class="btn btn-secundario btn-sm" id="btn-dir-orden"></button>
+    </div>
+    <div class="tabla-wrap">
+      <table class="tabla-listado">
+        <thead><tr id="fila-encabezados"></tr></thead>
+        <tbody id="cuerpo-listado"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 <footer class="creditos">Panel interno de farmeo — los cambios pueden tardar unos minutos en aplicarse.</footer>
@@ -386,6 +490,8 @@
     codigo: null,
     perfiles: [],
     ultimoLatido: null,
+    vista: "cuentas",                             // "cuentas" | "listado"
+    orden: { campo: "proximo", dir: "asc" },      // por defecto: próximo farmeo, más cercano primero
   };
 
   let timerRefresh = null;
@@ -441,6 +547,16 @@
     return { texto: `Lista para farmear (volvió hace ${Math.abs(diffMin)} min)`, clase: "regreso-listo" };
   }
 
+  function textoProximoCompacto(perfil) {
+    if (!perfil.ultimo_farmer) return { txt: "Lista ahora", clase: "regreso-listo" };
+    const regreso = calcularRegreso(perfil);
+    if (!regreso) return { txt: "—", clase: "" };
+    const diffMin = Math.round((regreso - new Date()) / 60000);
+    const hhmm = `${dosDigitos(regreso.getHours())}:${dosDigitos(regreso.getMinutes())}`;
+    if (diffMin > 0) return { txt: `${hhmm} · en ${diffMin} min`, clase: "regreso-ok" };
+    return { txt: `Lista (hace ${Math.abs(diffMin)} min)`, clase: "regreso-listo" };
+  }
+
   function minutosDesdeLatido() {
     if (!estadoApp.ultimoLatido) return Infinity;
     const d = new Date(estadoApp.ultimoLatido);
@@ -459,6 +575,76 @@
 
   function formatoNumero(n) {
     return n.toLocaleString("es-PE", { maximumFractionDigits: 1 });
+  }
+
+  function totalRss(p) {
+    return numero(p.alimento_actual) + numero(p.madera_actual)
+         + numero(p.piedra_actual) + numero(p.oro_actual);
+  }
+
+  // ---------- ordenamiento (vista listado) ----------
+
+  // Columnas de la tabla; las que tienen 'campo' se pueden ordenar.
+  const COLUMNAS = [
+    { campo: "granja",   label: "Granja" },
+    { campo: "cuenta",   label: "Cuenta" },
+    { campo: "alimento", label: "Alimento", num: true },
+    { campo: "madera",   label: "Madera",   num: true },
+    { campo: "piedra",   label: "Piedra",   num: true },
+    { campo: "oro",      label: "Oro",      num: true },
+    { campo: "total",    label: "Total RSS", num: true },
+    { campo: "proximo",  label: "Próximo farmeo" },
+    { campo: null,       label: "Estado" },
+    { campo: null,       label: "" },
+  ];
+
+  // Un perfil pausado no entra en la rotación del bot: al ordenar por próximo
+  // farmeo se manda al final para que arriba quede solo lo que sí se farmeará.
+  function fueraDeRotacion(p) {
+    const e = p.estado || "activo";
+    return e === "pausado" || e === "pausar_solicitado";
+  }
+
+  function tiempoProximo(p) {
+    if (!p.ultimo_farmer) return 0;              // nunca farmeado -> listo ya
+    const regreso = calcularRegreso(p);
+    return regreso ? regreso.getTime() : 0;
+  }
+
+  function valorOrden(p, campo) {
+    switch (campo) {
+      case "granja":   return String(p.nombre || "").toLowerCase();
+      case "cuenta":   return String(p.email_cuenta || "").toLowerCase();
+      case "alimento": return numero(p.alimento_actual);
+      case "madera":   return numero(p.madera_actual);
+      case "piedra":   return numero(p.piedra_actual);
+      case "oro":      return numero(p.oro_actual);
+      case "total":    return totalRss(p);
+      case "proximo":  return tiempoProximo(p);
+      default:         return 0;
+    }
+  }
+
+  function ordenarPerfiles(lista) {
+    const { campo, dir } = estadoApp.orden;
+    const mult = dir === "asc" ? 1 : -1;
+
+    return [...lista].sort((a, b) => {
+      if (campo === "proximo") {
+        const fa = fueraDeRotacion(a) ? 1 : 0;
+        const fb = fueraDeRotacion(b) ? 1 : 0;
+        if (fa !== fb) return fa - fb;   // pausadas al final, sin importar la dirección
+      }
+
+      const va = valorOrden(a, campo);
+      const vb = valorOrden(b, campo);
+      const cmp = typeof va === "string" ? va.localeCompare(vb, "es") : va - vb;
+      if (cmp !== 0) return cmp * mult;
+
+      // Desempate estable (no se invierte): cuenta y luego número de perfil
+      return String(a.email_cuenta || "").localeCompare(String(b.email_cuenta || ""), "es")
+          || (numero(a.numero_perfil) - numero(b.numero_perfil));
+    });
   }
 
   // ---------- estados de perfil ----------
@@ -647,8 +833,107 @@
   function renderizar() {
     renderBannerBot();
     renderTotalesGlobales();
-    renderCuentas();
+    if (estadoApp.vista === "listado") {
+      renderListado();
+    } else {
+      renderCuentas();
+    }
   }
+
+  // ---------- vista listado ----------
+
+  function renderListado() {
+    const flecha = estadoApp.orden.dir === "asc" ? "↑" : "↓";
+
+    document.getElementById("fila-encabezados").innerHTML = COLUMNAS.map(col => {
+      const clases = [
+        col.num ? "num" : "",
+        col.campo ? "ordenable" : "",
+        col.campo === estadoApp.orden.campo ? "activa" : "",
+      ].filter(Boolean).join(" ");
+      const onclick = col.campo ? `onclick="window.__ordenarPor('${col.campo}')"` : "";
+      const marca = col.campo === estadoApp.orden.campo ? ` ${flecha}` : "";
+      return `<th class="${clases}" ${onclick}>${escapeHtml(col.label)}${marca}</th>`;
+    }).join("");
+
+    const perfiles = ordenarPerfiles(estadoApp.perfiles);
+
+    if (!perfiles.length) {
+      document.getElementById("cuerpo-listado").innerHTML =
+        `<tr><td colspan="${COLUMNAS.length}"><div class="vacio">No se encontraron perfiles asociados a este código.</div></td></tr>`;
+      return;
+    }
+
+    document.getElementById("cuerpo-listado").innerHTML = perfiles.map(p => {
+      const est = infoEstado(p.estado || "activo", !botEnLinea());
+      const prox = textoProximoCompacto(p);
+      return `
+        <tr>
+          <td class="celda-granja">
+            <div class="n">${escapeHtml(p.nombre || "(sin nombre)")}</div>
+            <div class="m">Perfil ${escapeHtml(p.numero_perfil ?? "?")} · AY ${escapeHtml(p.ayuntamiento ?? "?")} · ID ${escapeHtml(p.id_juego)}</div>
+          </td>
+          <td class="celda-cuenta">${escapeHtml(p.email_cuenta || "—")}</td>
+          <td class="num">${formatoNumero(numero(p.alimento_actual))}</td>
+          <td class="num">${formatoNumero(numero(p.madera_actual))}</td>
+          <td class="num">${formatoNumero(numero(p.piedra_actual))}</td>
+          <td class="num">${formatoNumero(numero(p.oro_actual))}</td>
+          <td class="num total">${formatoNumero(totalRss(p))}</td>
+          <td class="${prox.clase}">${escapeHtml(prox.txt)}</td>
+          <td><span class="badge ${est.badge}">${est.label}</span></td>
+          <td>${botonAccionHtml(p)}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function cambiarVista(vista) {
+    estadoApp.vista = vista;
+    document.querySelectorAll(".tab-vista").forEach(btn => {
+      btn.classList.toggle("activa", btn.dataset.vista === vista);
+    });
+    document.getElementById("vista-cuentas").classList.toggle("oculto", vista !== "cuentas");
+    document.getElementById("vista-listado").classList.toggle("oculto", vista !== "listado");
+    renderizar();
+  }
+
+  document.querySelectorAll(".tab-vista").forEach(btn => {
+    btn.addEventListener("click", () => cambiarVista(btn.dataset.vista));
+  });
+
+  // Selector de orden (más cómodo en móvil que tocar los encabezados)
+  const selectOrden = document.getElementById("select-orden");
+  selectOrden.innerHTML = COLUMNAS.filter(c => c.campo)
+    .map(c => `<option value="${c.campo}">${escapeHtml(c.label)}</option>`).join("");
+  selectOrden.value = estadoApp.orden.campo;
+  selectOrden.addEventListener("change", () => {
+    estadoApp.orden.campo = selectOrden.value;
+    renderListado();
+  });
+
+  const btnDirOrden = document.getElementById("btn-dir-orden");
+  function actualizarBotonDir() {
+    btnDirOrden.textContent = estadoApp.orden.dir === "asc" ? "↑ Ascendente" : "↓ Descendente";
+  }
+  btnDirOrden.addEventListener("click", () => {
+    estadoApp.orden.dir = estadoApp.orden.dir === "asc" ? "desc" : "asc";
+    actualizarBotonDir();
+    renderListado();
+  });
+  actualizarBotonDir();
+
+  // Click en encabezado: misma columna alterna dirección, otra columna la cambia
+  window.__ordenarPor = function (campo) {
+    if (estadoApp.orden.campo === campo) {
+      estadoApp.orden.dir = estadoApp.orden.dir === "asc" ? "desc" : "asc";
+    } else {
+      estadoApp.orden.campo = campo;
+      estadoApp.orden.dir = "asc";
+    }
+    selectOrden.value = estadoApp.orden.campo;
+    actualizarBotonDir();
+    renderListado();
+  };
 
   function renderBannerBot() {
     const banner = document.getElementById("banner-bot-offline");
@@ -738,24 +1023,31 @@
     }).join("");
   }
 
+  // Se puede pausar/reanudar aunque el bot esté apagado (solo escribe en el
+  // Sheet). Mientras haya una solicitud pendiente de aplicar, se ofrece
+  // "Cancelar" en vez de bloquear el botón sin más.
+  function botonAccionHtml(p) {
+    const estadoActual = p.estado || "activo";
+    const offline = !botEnLinea();
+    const est = infoEstado(estadoActual, offline);
+    const esPendiente = estadoActual === "pausar_solicitado" || estadoActual === "reanudar_solicitado";
+    const tituloPendiente = offline ? "Se aplicará en cuanto el bot vuelva a iniciar" : "";
+
+    if (esPendiente) {
+      return `<button class="btn btn-sm btn-cancelar" title="${escapeAttr(tituloPendiente)}"
+        onclick="window.__cancelarPerfil('${escapeAttr(p.id_juego)}')">Cancelar</button>`;
+    }
+    return `<button class="btn btn-sm ${est.claseBtn}"
+      data-id="${escapeHtml(p.id_juego)}" data-accion="${est.accion || ""}"
+      onclick="window.__pausarPerfil('${escapeAttr(p.id_juego)}','${est.accion}')">${est.boton}</button>`;
+  }
+
   function renderPerfilCard(p) {
     const estadoActual = p.estado || "activo";
     const offline = !botEnLinea();
     const est = infoEstado(estadoActual, offline);
     const regreso = textoRegreso(p);
-
-    // Se puede pausar/reanudar aunque el bot esté apagado (solo escribe en el
-    // Sheet). Mientras haya una solicitud pendiente de aplicar, se ofrece
-    // "Cancelar" en vez de bloquear el botón sin más.
-    const esPendiente = estadoActual === "pausar_solicitado" || estadoActual === "reanudar_solicitado";
-    const tituloPendiente = offline ? "Se aplicará en cuanto el bot vuelva a iniciar" : "";
-
-    const botonHtml = esPendiente
-      ? `<button class="btn btn-sm btn-cancelar" title="${escapeAttr(tituloPendiente)}"
-           onclick="window.__cancelarPerfil('${escapeAttr(p.id_juego)}')">Cancelar</button>`
-      : `<button class="btn btn-sm ${est.claseBtn}"
-           data-id="${escapeHtml(p.id_juego)}" data-accion="${est.accion || ""}"
-           onclick="window.__pausarPerfil('${escapeAttr(p.id_juego)}','${est.accion}')">${est.boton}</button>`;
+    const botonHtml = botonAccionHtml(p);
 
     return `
       <div class="perfil-card">
