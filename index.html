@@ -20,9 +20,7 @@
     --radio: 14px;
     --sombra: 0 4px 18px rgba(0,0,0,.28);
   }
-
   * { box-sizing: border-box; }
-
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -30,9 +28,7 @@
     color: var(--texto);
     min-height: 100vh;
   }
-
   .oculto { display: none !important; }
-
   /* ---------- LOGIN ---------- */
   #pantalla-login {
     min-height: 100vh;
@@ -41,7 +37,6 @@
     justify-content: center;
     padding: 24px;
   }
-
   .card-login {
     width: 100%;
     max-width: 360px;
@@ -52,18 +47,15 @@
     padding: 32px 28px;
     text-align: center;
   }
-
   .card-login h1 {
     font-size: 1.3rem;
     margin: 0 0 6px;
   }
-
   .card-login p.sub {
     color: var(--texto-tenue);
     font-size: .88rem;
     margin: 0 0 22px;
   }
-
   input#input-codigo {
     width: 100%;
     font-size: 1.6rem;
@@ -79,7 +71,6 @@
   input#input-codigo:focus {
     border-color: var(--acento);
   }
-
   .btn {
     display: inline-flex;
     align-items: center;
@@ -95,26 +86,21 @@
   }
   .btn:active { transform: scale(.97); }
   .btn:disabled { opacity: .55; cursor: not-allowed; }
-
   .btn-primario { background: var(--acento); color: white; }
   .btn-primario:hover:not(:disabled) { background: var(--acento-2); }
-
   .btn-block { width: 100%; margin-top: 16px; }
-
   .error-msg {
     color: var(--rojo);
     font-size: .85rem;
     min-height: 1.2em;
     margin-top: 12px;
   }
-
   /* ---------- DASHBOARD ---------- */
   #pantalla-dashboard {
     max-width: 980px;
     margin: 0 auto;
     padding: 18px 16px 60px;
   }
-
   header.top {
     display: flex;
     align-items: center;
@@ -123,7 +109,6 @@
     margin-bottom: 18px;
     flex-wrap: wrap;
   }
-
   header.top h1 {
     font-size: 1.15rem;
     margin: 0;
@@ -131,29 +116,24 @@
   header.top .propietario {
     color: var(--acento-2);
   }
-
   .acciones-top {
     display: flex;
     gap: 8px;
     align-items: center;
   }
-
   .btn-secundario {
     background: var(--bg-card-2);
     color: var(--texto);
     border: 1px solid var(--borde);
   }
   .btn-secundario:hover:not(:disabled) { border-color: var(--acento); }
-
   .btn-sm { padding: 8px 12px; font-size: .8rem; }
-
   .ultima-actualizacion {
     font-size: .75rem;
     color: var(--texto-tenue);
     text-align: right;
     margin-bottom: 14px;
   }
-
   .banner-bot-offline {
     display: flex;
     align-items: center;
@@ -168,7 +148,6 @@
     line-height: 1.4;
   }
   .banner-bot-offline .icono { font-size: 1.2rem; }
-
   /* Totales globales */
   .totales-globales {
     display: grid;
@@ -179,7 +158,6 @@
   @media (min-width: 560px) {
     .totales-globales { grid-template-columns: repeat(4, 1fr); }
   }
-
   .stat-tile {
     background: var(--bg-card);
     border: 1px solid var(--borde);
@@ -197,7 +175,6 @@
     letter-spacing: .04em;
     margin-top: 2px;
   }
-
   .resumen-estado {
     display: flex;
     gap: 10px;
@@ -207,7 +184,6 @@
     flex-wrap: wrap;
   }
   .resumen-estado b { color: var(--texto); }
-
   /* Grupos por cuenta */
   .grupo-cuenta {
     background: var(--bg-card);
@@ -216,7 +192,6 @@
     margin-bottom: 16px;
     overflow: hidden;
   }
-
   .grupo-cuenta .cabecera {
     padding: 12px 16px;
     background: var(--bg-card-2);
@@ -226,13 +201,11 @@
     flex-wrap: wrap;
     gap: 8px;
   }
-
   .grupo-cuenta .cabecera .email {
     font-weight: 600;
     font-size: .88rem;
     word-break: break-all;
   }
-
   .subtotales {
     display: flex;
     gap: 12px;
@@ -241,9 +214,7 @@
     flex-wrap: wrap;
   }
   .subtotales span b { color: var(--texto); }
-
   .lista-perfiles { padding: 6px; }
-
   .perfil-card {
     display: grid;
     grid-template-columns: 1fr;
@@ -253,14 +224,12 @@
     margin: 6px;
   }
   .perfil-card:hover { background: rgba(255,255,255,.02); }
-
   @media (min-width: 700px) {
     .perfil-card {
       grid-template-columns: 1.4fr 1.4fr 1fr auto;
       align-items: center;
     }
   }
-
   .perfil-id {
     display: flex;
     flex-direction: column;
@@ -268,7 +237,6 @@
   }
   .perfil-id .nombre { font-weight: 700; font-size: .95rem; }
   .perfil-id .meta { font-size: .72rem; color: var(--texto-tenue); }
-
   .recursos {
     display: flex;
     gap: 10px;
@@ -281,7 +249,6 @@
     padding: 4px 8px;
     white-space: nowrap;
   }
-
   .tiempos {
     font-size: .75rem;
     color: var(--texto-tenue);
@@ -289,7 +256,6 @@
   }
   .tiempos .regreso-ok { color: var(--verde); }
   .tiempos .regreso-listo { color: var(--amarillo); font-weight: 600; }
-
   .acciones-perfil {
     display: flex;
     align-items: center;
@@ -299,7 +265,6 @@
   @media (min-width: 700px) {
     .acciones-perfil { justify-content: flex-end; }
   }
-
   .badge {
     font-size: .68rem;
     font-weight: 700;
@@ -312,7 +277,6 @@
   .badge-activo { background: rgba(52,211,153,.15); color: var(--verde); }
   .badge-pausado { background: rgba(248,113,113,.15); color: var(--rojo); }
   .badge-pendiente { background: rgba(251,191,36,.15); color: var(--amarillo); }
-
   .btn-pausar { background: rgba(248,113,113,.15); color: var(--rojo); }
   .btn-pausar:hover:not(:disabled) { background: rgba(248,113,113,.28); }
   .btn-reanudar { background: rgba(52,211,153,.15); color: var(--verde); }
@@ -320,7 +284,6 @@
   .btn-pendiente { background: rgba(251,191,36,.15); color: var(--amarillo); }
   .btn-cancelar { background: var(--bg-card-2); color: var(--texto-tenue); border: 1px solid var(--borde); }
   .btn-cancelar:hover:not(:disabled) { color: var(--texto); border-color: var(--acento); }
-
   /* ---------- SELECTOR DE VISTA ---------- */
   .tabs-vista {
     display: inline-flex;
@@ -344,7 +307,6 @@
   }
   .tab-vista:hover:not(.activa) { color: var(--texto); }
   .tab-vista.activa { background: var(--acento); color: #fff; }
-
   /* ---------- VISTA LISTADO ---------- */
   .barra-orden {
     display: flex;
@@ -366,7 +328,6 @@
     outline: none;
   }
   .barra-orden select:focus { border-color: var(--acento); }
-
   .tabla-wrap {
     overflow-x: auto;
     border: 1px solid var(--borde);
@@ -403,14 +364,12 @@
   .celda-granja .n { font-weight: 700; }
   .celda-granja .m { font-size: .7rem; color: var(--texto-tenue); }
   .celda-cuenta { color: var(--texto-tenue); font-size: .75rem; }
-
   .vacio {
     text-align: center;
     color: var(--texto-tenue);
     padding: 40px 10px;
     font-size: .9rem;
   }
-
   footer.creditos {
     text-align: center;
     color: var(--texto-tenue);
@@ -420,7 +379,6 @@
 </style>
 </head>
 <body>
-
 <section id="pantalla-login">
   <div class="card-login">
     <h1>🌾 Panel de Farmeo</h1>
@@ -430,7 +388,6 @@
     <div class="error-msg" id="login-error"></div>
   </div>
 </section>
-
 <section id="pantalla-dashboard" class="oculto">
   <header class="top">
     <h1>🌾 Hola, <span class="propietario" id="txt-propietario"></span></h1>
@@ -439,26 +396,20 @@
       <button class="btn btn-secundario btn-sm" id="btn-salir">Salir</button>
     </div>
   </header>
-
   <div class="ultima-actualizacion" id="txt-ultima-actualizacion"></div>
-
   <div class="banner-bot-offline oculto" id="banner-bot-offline">
     <span class="icono">⚠️</span>
     <span id="txt-banner-bot-offline"></span>
   </div>
-
   <div class="totales-globales" id="totales-globales"></div>
   <div class="resumen-estado" id="resumen-estado"></div>
-
   <div class="tabs-vista">
     <button class="tab-vista activa" data-vista="cuentas">Por cuenta</button>
     <button class="tab-vista" data-vista="listado">Listado</button>
   </div>
-
   <div id="vista-cuentas">
     <div id="contenedor-cuentas"></div>
   </div>
-
   <div id="vista-listado" class="oculto">
     <div class="barra-orden">
       <span>Ordenar por</span>
@@ -473,20 +424,22 @@
     </div>
   </div>
 </section>
-
 <footer class="creditos">Panel interno de farmeo — los cambios pueden tardar unos minutos en aplicarse.</footer>
-
 <script>
 (function () {
   "use strict";
-
   const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyfnMSLDHqq_NVr67XhG42kLXWlTi9wfiNXiMAM7IkjTHV8cfc7AlSByvK6Dh_Owf2b/exec";
   const INTERVALO_REFRESH_MS = 45000;   // vuelve a pedir datos al servidor
   const INTERVALO_TICK_MS = 20000;      // solo recalcula los contadores de tiempo
   const UMBRAL_LATIDO_MIN = 15;         // si el bot no reporta actividad en estos minutos, se considera desconectado
                                         // (holgado a propósito: farmear un perfil puede tardar varios minutos
                                         //  y el bot solo reporta entre perfil y perfil)
-
+  // Todas las horas "ultimo_farmer" / "penultimo_farmer" se guardan en el Sheet
+  // siempre en hora de Perú. Perú usa UTC-5 todo el año (no tiene horario de
+  // verano), así que el offset es fijo. Se usa para reconstruir el instante
+  // absoluto real a partir del texto guardado, sin importar en qué huso
+  // horario esté el navegador de quien abre la página.
+  const OFFSET_PERU_HORAS = 5; // Perú = UTC-5
   const estadoApp = {
     propietario: null,
     codigo: null,
@@ -495,12 +448,9 @@
     vista: "cuentas",                             // "cuentas" | "listado"
     orden: { campo: "proximo", dir: "asc" },      // por defecto: próximo farmeo, más cercano primero
   };
-
   let timerRefresh = null;
   let timerTick = null;
-
   // ---------- helpers de red ----------
-
   function postAppsScript(payload) {
     return fetch(APPS_SCRIPT_URL, {
       method: "POST",
@@ -508,14 +458,19 @@
       body: JSON.stringify(payload),
     }).then(r => r.json());
   }
-
   function getAppsScript(params) {
     const qs = new URLSearchParams(params).toString();
     return fetch(`${APPS_SCRIPT_URL}?${qs}`).then(r => r.json());
   }
-
   // ---------- fechas / tiempos ----------
-
+  // El string guardado (ej. "20:40 31/07/2026") representa siempre hora de
+  // Perú (UTC-5 fijo). Aquí se convierte a un instante absoluto (UTC) sumando
+  // el offset, en vez de dejar que el navegador lo interprete como si esos
+  // números fueran su propia hora local. A partir de ese instante absoluto,
+  // toda la aritmética (sumar horas de retorno, restar "ahora") es correcta
+  // sin importar el país, y al mostrarlo con getHours()/getMinutes() el
+  // propio navegador lo traduce automáticamente a la hora local de quien
+  // esté viendo la página (España, Perú, o cualquier otro país).
   function parseFechaCustom(str) {
     if (!str) return null;
     const partes = String(str).trim().split(" ");
@@ -524,18 +479,15 @@
     const [hh, mm] = hhmm.split(":").map(Number);
     const [dd, MM, yyyy] = ddmmyyyy.split("/").map(Number);
     if ([hh, mm, dd, MM, yyyy].some(Number.isNaN)) return null;
-    return new Date(yyyy, MM - 1, dd, hh, mm);
+    return new Date(Date.UTC(yyyy, MM - 1, dd, hh + OFFSET_PERU_HORAS, mm));
   }
-
   function calcularRegreso(perfil) {
     const ultimo = parseFechaCustom(perfil.ultimo_farmer);
     const horas = parseFloat(perfil.tiempo_retorno);
     if (!ultimo || Number.isNaN(horas)) return null;
     return new Date(ultimo.getTime() + horas * 3600 * 1000);
   }
-
   function dosDigitos(n) { return String(n).padStart(2, "0"); }
-
   function textoRegreso(perfil) {
     if (!perfil.ultimo_farmer) return { texto: "Aún no ha farmeado", clase: "" };
     const regreso = calcularRegreso(perfil);
@@ -548,7 +500,6 @@
     }
     return { texto: `Lista para farmear (volvió hace ${Math.abs(diffMin)} min)`, clase: "regreso-listo" };
   }
-
   function textoProximoCompacto(perfil) {
     if (!perfil.ultimo_farmer) return { txt: "Lista ahora", clase: "regreso-listo" };
     const regreso = calcularRegreso(perfil);
@@ -558,34 +509,27 @@
     if (diffMin > 0) return { txt: `${hhmm} · en ${diffMin} min`, clase: "regreso-ok" };
     return { txt: `Lista (hace ${Math.abs(diffMin)} min)`, clase: "regreso-listo" };
   }
-
   function minutosDesdeLatido() {
     if (!estadoApp.ultimoLatido) return Infinity;
     const d = new Date(estadoApp.ultimoLatido);
     if (isNaN(d.getTime())) return Infinity;
     return (new Date() - d) / 60000;
   }
-
   function botEnLinea() {
     return minutosDesdeLatido() <= UMBRAL_LATIDO_MIN;
   }
-
   function numero(v, decimales = 1) {
     const n = parseFloat(v);
     return Number.isFinite(n) ? n : 0;
   }
-
   function formatoNumero(n) {
     return n.toLocaleString("es-PE", { maximumFractionDigits: 1 });
   }
-
   function totalRss(p) {
     return numero(p.alimento_actual) + numero(p.madera_actual)
          + numero(p.piedra_actual) + numero(p.oro_actual);
   }
-
   // ---------- ordenamiento (vista listado) ----------
-
   // Columnas de la tabla; las que tienen 'campo' se pueden ordenar.
   const COLUMNAS = [
     { campo: "granja",   label: "Granja" },
@@ -599,20 +543,17 @@
     { campo: null,       label: "Estado" },
     { campo: null,       label: "" },
   ];
-
   // Un perfil pausado no entra en la rotación del bot: al ordenar por próximo
   // farmeo se manda al final para que arriba quede solo lo que sí se farmeará.
   function fueraDeRotacion(p) {
     const e = p.estado || "activo";
     return e === "pausado" || e === "pausar_solicitado";
   }
-
   function tiempoProximo(p) {
     if (!p.ultimo_farmer) return 0;              // nunca farmeado -> listo ya
     const regreso = calcularRegreso(p);
     return regreso ? regreso.getTime() : 0;
   }
-
   function valorOrden(p, campo) {
     switch (campo) {
       case "granja":   return String(p.nombre || "").toLowerCase();
@@ -626,38 +567,31 @@
       default:         return 0;
     }
   }
-
   function ordenarPerfiles(lista) {
     const { campo, dir } = estadoApp.orden;
     const mult = dir === "asc" ? 1 : -1;
-
     return [...lista].sort((a, b) => {
       if (campo === "proximo") {
         const fa = fueraDeRotacion(a) ? 1 : 0;
         const fb = fueraDeRotacion(b) ? 1 : 0;
         if (fa !== fb) return fa - fb;   // pausadas al final, sin importar la dirección
       }
-
       const va = valorOrden(a, campo);
       const vb = valorOrden(b, campo);
       const cmp = typeof va === "string" ? va.localeCompare(vb, "es") : va - vb;
       if (cmp !== 0) return cmp * mult;
-
       // Desempate estable (no se invierte): cuenta y luego número de perfil
       return String(a.email_cuenta || "").localeCompare(String(b.email_cuenta || ""), "es")
           || (numero(a.numero_perfil) - numero(b.numero_perfil));
     });
   }
-
   // ---------- estados de perfil ----------
-
   const ESTADOS = {
     activo:              { label: "Activo",      badge: "badge-activo",    boton: "Pausar",      claseBtn: "btn-pausar",   accion: "pausar" },
     pausado:             { label: "Pausado",      badge: "badge-pausado",   boton: "Reanudar",    claseBtn: "btn-reanudar", accion: "reanudar" },
     pausar_solicitado:   { label: "Pausando…",    badge: "badge-pendiente", boton: "Pausando…",   claseBtn: "btn-pendiente", accion: null },
     reanudar_solicitado: { label: "Reanudando…",  badge: "badge-pendiente", boton: "Reanudando…", claseBtn: "btn-pendiente", accion: null },
   };
-
   // Las solicitudes se pueden mandar aunque el bot esté apagado (solo escriben
   // en el Sheet); si además está offline, se avisa que quedará "en cola" en
   // vez de sugerir que se está aplicando en este momento.
@@ -669,18 +603,14 @@
     }
     return base;
   }
-
   // ---------- login ----------
-
   const inputCodigo = document.getElementById("input-codigo");
   const btnEntrar = document.getElementById("btn-entrar");
   const loginError = document.getElementById("login-error");
-
   function intentarLogin(codigo) {
     loginError.textContent = "";
     btnEntrar.disabled = true;
     btnEntrar.textContent = "Verificando…";
-
     return postAppsScript({ action: "login", codigo })
       .then(resp => {
         if (!resp.ok) {
@@ -704,7 +634,6 @@
         btnEntrar.textContent = "Entrar";
       });
   }
-
   btnEntrar.addEventListener("click", () => {
     const codigo = inputCodigo.value.trim();
     if (codigo.length !== 6) {
@@ -713,14 +642,12 @@
     }
     intentarLogin(codigo);
   });
-
   inputCodigo.addEventListener("keydown", e => {
     if (e.key === "Enter") btnEntrar.click();
   });
   inputCodigo.addEventListener("input", () => {
     inputCodigo.value = inputCodigo.value.replace(/[^0-9]/g, "");
   });
-
   document.getElementById("btn-salir").addEventListener("click", () => {
     sessionStorage.removeItem("farmeo_codigo");
     estadoApp.propietario = null;
@@ -733,28 +660,23 @@
     inputCodigo.value = "";
     inputCodigo.focus();
   });
-
   // ---------- dashboard ----------
-
   function mostrarDashboard() {
     document.getElementById("pantalla-login").classList.add("oculto");
     document.getElementById("pantalla-dashboard").classList.remove("oculto");
     document.getElementById("txt-propietario").textContent = estadoApp.propietario;
     renderizar();
     marcarActualizado();
-
     clearInterval(timerRefresh);
     clearInterval(timerTick);
     timerRefresh = setInterval(actualizarDatos, INTERVALO_REFRESH_MS);
     timerTick = setInterval(renderizar, INTERVALO_TICK_MS);
   }
-
   function marcarActualizado() {
     const ahora = new Date();
     document.getElementById("txt-ultima-actualizacion").textContent =
       `Actualizado ${dosDigitos(ahora.getHours())}:${dosDigitos(ahora.getMinutes())}:${dosDigitos(ahora.getSeconds())}`;
   }
-
   function actualizarDatos() {
     if (!estadoApp.propietario) return;
     return getAppsScript({ action: "export" })
@@ -767,13 +689,11 @@
       })
       .catch(() => { /* se mantiene lo último cargado si falla la red */ });
   }
-
   document.getElementById("btn-actualizar").addEventListener("click", () => {
     const btn = document.getElementById("btn-actualizar");
     btn.disabled = true;
     actualizarDatos().finally(() => { btn.disabled = false; });
   });
-
   function solicitarPausa(idJuego, nuevaAccion, estadoOptimista) {
     const perfil = estadoApp.perfiles.find(p => String(p.id_juego) === String(idJuego));
     const estadoOriginal = perfil ? perfil.estado : null;
@@ -801,7 +721,6 @@
       alert("No se pudo conectar para enviar la solicitud.");
     });
   }
-
   function cancelarSolicitud(idJuego) {
     const perfil = estadoApp.perfiles.find(p => String(p.id_juego) === String(idJuego));
     const estadoOriginal = perfil ? perfil.estado : null;
@@ -829,9 +748,7 @@
       alert("No se pudo conectar para cancelar la solicitud.");
     });
   }
-
   // ---------- render ----------
-
   function renderizar() {
     renderBannerBot();
     renderTotalesGlobales();
@@ -841,12 +758,9 @@
       renderCuentas();
     }
   }
-
   // ---------- vista listado ----------
-
   function renderListado() {
     const flecha = estadoApp.orden.dir === "asc" ? "↑" : "↓";
-
     document.getElementById("fila-encabezados").innerHTML = COLUMNAS.map(col => {
       const clases = [
         col.num ? "num" : "",
@@ -857,15 +771,12 @@
       const marca = col.campo === estadoApp.orden.campo ? ` ${flecha}` : "";
       return `<th class="${clases}" ${onclick}>${escapeHtml(col.label)}${marca}</th>`;
     }).join("");
-
     const perfiles = ordenarPerfiles(estadoApp.perfiles);
-
     if (!perfiles.length) {
       document.getElementById("cuerpo-listado").innerHTML =
         `<tr><td colspan="${COLUMNAS.length}"><div class="vacio">No se encontraron perfiles asociados a este código.</div></td></tr>`;
       return;
     }
-
     document.getElementById("cuerpo-listado").innerHTML = perfiles.map(p => {
       const est = infoEstado(p.estado || "activo", !botEnLinea());
       const prox = textoProximoCompacto(p);
@@ -888,7 +799,6 @@
       `;
     }).join("");
   }
-
   function cambiarVista(vista) {
     estadoApp.vista = vista;
     document.querySelectorAll(".tab-vista").forEach(btn => {
@@ -898,11 +808,9 @@
     document.getElementById("vista-listado").classList.toggle("oculto", vista !== "listado");
     renderizar();
   }
-
   document.querySelectorAll(".tab-vista").forEach(btn => {
     btn.addEventListener("click", () => cambiarVista(btn.dataset.vista));
   });
-
   // Selector de orden (más cómodo en móvil que tocar los encabezados)
   const selectOrden = document.getElementById("select-orden");
   selectOrden.innerHTML = COLUMNAS.filter(c => c.campo)
@@ -912,7 +820,6 @@
     estadoApp.orden.campo = selectOrden.value;
     renderListado();
   });
-
   const btnDirOrden = document.getElementById("btn-dir-orden");
   function actualizarBotonDir() {
     btnDirOrden.textContent = estadoApp.orden.dir === "asc" ? "↑ Ascendente" : "↓ Descendente";
@@ -923,7 +830,6 @@
     renderListado();
   });
   actualizarBotonDir();
-
   // Click en encabezado: misma columna alterna dirección, otra columna la cambia
   window.__ordenarPor = function (campo) {
     if (estadoApp.orden.campo === campo) {
@@ -936,7 +842,6 @@
     actualizarBotonDir();
     renderListado();
   };
-
   function renderBannerBot() {
     const banner = document.getElementById("banner-bot-offline");
     if (botEnLinea()) {
@@ -950,7 +855,6 @@
       `Puedes pausar o reanudar perfiles igual — quedarán "en cola" y se aplicarán en cuanto el bot vuelva a iniciar.`;
     banner.classList.remove("oculto");
   }
-
   function renderTotalesGlobales() {
     const p = estadoApp.perfiles;
     const totales = p.reduce((acc, x) => {
@@ -960,20 +864,16 @@
       acc.oro += numero(x.oro_actual);
       return acc;
     }, { alimento: 0, madera: 0, piedra: 0, oro: 0 });
-
     const activos = p.filter(x => (x.estado || "activo") === "activo").length;
     const pausados = p.filter(x => x.estado === "pausado").length;
     const pendientes = p.filter(x => x.estado === "pausar_solicitado" || x.estado === "reanudar_solicitado").length;
-
     document.getElementById("totales-globales").innerHTML = `
       <div class="stat-tile"><div class="valor">🌾 ${formatoNumero(totales.alimento)}</div><div class="etiqueta">Alimento</div></div>
       <div class="stat-tile"><div class="valor">🪵 ${formatoNumero(totales.madera)}</div><div class="etiqueta">Madera</div></div>
       <div class="stat-tile"><div class="valor">🪨 ${formatoNumero(totales.piedra)}</div><div class="etiqueta">Piedra</div></div>
       <div class="stat-tile"><div class="valor">🪙 ${formatoNumero(totales.oro)}</div><div class="etiqueta">Oro</div></div>
     `;
-
     const textoPendientes = botEnLinea() ? "aplicando cambios…" : "en cola (esperando al bot)";
-
     document.getElementById("resumen-estado").innerHTML = `
       <span><b>${p.length}</b> perfiles</span>
       <span><b>${activos}</b> activos</span>
@@ -981,21 +881,17 @@
       ${pendientes ? `<span><b>${pendientes}</b> ${textoPendientes}</span>` : ""}
     `;
   }
-
   function renderCuentas() {
     const cont = document.getElementById("contenedor-cuentas");
-
     if (!estadoApp.perfiles.length) {
       cont.innerHTML = `<div class="vacio">No se encontraron perfiles asociados a este código.</div>`;
       return;
     }
-
     const porCuenta = {};
     estadoApp.perfiles.forEach(p => {
       const key = p.email_cuenta || "sin_cuenta";
       (porCuenta[key] = porCuenta[key] || []).push(p);
     });
-
     cont.innerHTML = Object.keys(porCuenta).sort().map(email => {
       const perfiles = porCuenta[email].sort((a, b) => (a.numero_perfil || 0) - (b.numero_perfil || 0));
       const sub = perfiles.reduce((acc, x) => {
@@ -1005,7 +901,6 @@
         acc.oro += numero(x.oro_actual);
         return acc;
       }, { alimento: 0, madera: 0, piedra: 0, oro: 0 });
-
       return `
         <div class="grupo-cuenta">
           <div class="cabecera">
@@ -1024,7 +919,6 @@
       `;
     }).join("");
   }
-
   // Se puede pausar/reanudar aunque el bot esté apagado (solo escribe en el
   // Sheet). Mientras haya una solicitud pendiente de aplicar, se ofrece
   // "Cancelar" en vez de bloquear el botón sin más.
@@ -1034,7 +928,6 @@
     const est = infoEstado(estadoActual, offline);
     const esPendiente = estadoActual === "pausar_solicitado" || estadoActual === "reanudar_solicitado";
     const tituloPendiente = offline ? "Se aplicará en cuanto el bot vuelva a iniciar" : "";
-
     if (esPendiente) {
       return `<button class="btn btn-sm btn-cancelar" title="${escapeAttr(tituloPendiente)}"
         onclick="window.__cancelarPerfil('${escapeAttr(p.id_juego)}')">Cancelar</button>`;
@@ -1043,33 +936,28 @@
       data-id="${escapeHtml(p.id_juego)}" data-accion="${est.accion || ""}"
       onclick="window.__pausarPerfil('${escapeAttr(p.id_juego)}','${est.accion}')">${est.boton}</button>`;
   }
-
   function renderPerfilCard(p) {
     const estadoActual = p.estado || "activo";
     const offline = !botEnLinea();
     const est = infoEstado(estadoActual, offline);
     const regreso = textoRegreso(p);
     const botonHtml = botonAccionHtml(p);
-
     return `
       <div class="perfil-card">
         <div class="perfil-id">
           <div class="nombre">${escapeHtml(p.nombre || "(sin nombre)")}</div>
           <div class="meta">Perfil ${escapeHtml(p.numero_perfil ?? "?")} · Ayuntamiento ${escapeHtml(p.ayuntamiento ?? "?")} · ID ${escapeHtml(p.id_juego)}</div>
         </div>
-
         <div class="recursos">
           <span class="chip">🌾 ${formatoNumero(numero(p.alimento_actual))}</span>
           <span class="chip">🪵 ${formatoNumero(numero(p.madera_actual))}</span>
           <span class="chip">🪨 ${formatoNumero(numero(p.piedra_actual))}</span>
           <span class="chip">🪙 ${formatoNumero(numero(p.oro_actual))}</span>
         </div>
-
         <div class="tiempos">
           <div>Última granja: ${escapeHtml(p.ultimo_farmer || "—")}</div>
           <div class="${regreso.clase}">${regreso.texto}</div>
         </div>
-
         <div class="acciones-perfil">
           <span class="badge ${est.badge}">${est.label}</span>
           ${botonHtml}
@@ -1077,25 +965,20 @@
       </div>
     `;
   }
-
   window.__pausarPerfil = function (idJuego, accion) {
     const estadoOptimista = accion === "reanudar" ? "reanudar_solicitado" : "pausar_solicitado";
     solicitarPausa(idJuego, accion, estadoOptimista);
   };
-
   window.__cancelarPerfil = function (idJuego) {
     cancelarSolicitud(idJuego);
   };
-
   function escapeHtml(v) {
     return String(v ?? "").replace(/[&<>"']/g, c => ({
       "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
     }[c]));
   }
   function escapeAttr(v) { return escapeHtml(v).replace(/'/g, "\\'"); }
-
   // ---------- sesión persistida ----------
-
   const codigoGuardado = sessionStorage.getItem("farmeo_codigo");
   if (codigoGuardado) {
     inputCodigo.value = codigoGuardado;
@@ -1105,6 +988,5 @@
   }
 })();
 </script>
-
 </body>
 </html>
